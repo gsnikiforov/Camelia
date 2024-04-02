@@ -1,3 +1,7 @@
+"""
+Всякие полезные вспомогательности.
+"""
+
 from os.path import isfile
 from json import    dump as json_dump, load as json_load
 
@@ -18,6 +22,9 @@ DECRYPT = not ENCRYPT
 
 
 def log(x: int, n: int) -> int:
+    """
+    floor( log(x, n) )
+    """
 
     if x < 0:
         raise ValueError(f"x > 0 !!! Passed {x}, however.")
@@ -30,6 +37,9 @@ def log(x: int, n: int) -> int:
 
 
 def sizeof(x: int | str) -> int:
+    """
+    Аналог sizeof в C.
+    """
 
     if type(x) == int:
         return log(x, 256) + 1
@@ -41,6 +51,9 @@ def sizeof(x: int | str) -> int:
 
 
 def bitsize(x: int) -> int:
+    """
+    Длина слова в битах.
+    """
 
     bits = 0
     while x:
@@ -49,13 +62,27 @@ def bitsize(x: int) -> int:
     return bits
 
 
+# ===== Маски =====
 
 
 def unit_mask(n: int) -> int:
+    """
+    Создаёт маску из 1 длиной n бит.
+    Например, unit_mask(4) = 0b1111.
+    """
+
     return (1 << n) - 1
 
 
 def chess_mask(n: int) -> int:
+    """
+    Возвращает пару (L, R), где
+    L = 0b11...100...0,
+    R = 0b00...011...1.
+
+    n - чётное число.
+    """
+
     if n % 2:
         raise ValueError("n must be even. Passed %i." % n)
 
@@ -69,6 +96,10 @@ def chess_mask(n: int) -> int:
 
 
 def left_rotation(a: int, x: int) -> int:
+    """
+    Производит циклический сдвиг влево на x бит.
+    """
+
     if x < 0:
         raise ValueError("x must be non-negative!")
 
@@ -85,6 +116,10 @@ def left_rotation(a: int, x: int) -> int:
 
 
 def pad(x: any, n: int) -> int:
+    """
+    Делает x (|x| < n) длиною в n бит.
+    """
+
     if bitsize(x) >= n:
         raise ValueError(f"bitsize({x}) is bigger than {n}.")
 
@@ -95,6 +130,10 @@ def pad(x: any, n: int) -> int:
 
 
 def contains(s: str, values: iter):
+    """
+    Проверяет наличие элементов из values в s.
+    """
+
     for i in s:
         if i in values:
             return True
@@ -102,11 +141,18 @@ def contains(s: str, values: iter):
 
 
 def check_empty_intersection(s: str, allowed):
+    """
+    Выполняет проверку на пустое пересечение.
+    """
 
     return len( set(s).difference(allowed) ) == 0
 
 
 def is_number(s: str) -> tuple[bool, int]:
+    """
+    Адекватный аналог метода isdigit класса str.
+    Возвращает True/False и основание в случае True.
+    """
     base = 10
     
     if type(s) == int:
@@ -143,6 +189,9 @@ def is_number(s: str) -> tuple[bool, int]:
 
 
 def str_to_int(s: str) -> int:
+    """
+    Преобразует строку в число.
+    """
     
     i = 0
     for l in s[::-1]:
@@ -152,6 +201,9 @@ def str_to_int(s: str) -> int:
 
 
 def int_to_str(i: int) -> str:
+    """
+    Преобразует число в строку.
+    """
 
     s = ""
     mask = unit_mask(UTF)
@@ -165,6 +217,9 @@ def int_to_str(i: int) -> str:
 
 
 def file_empty(filename: str) -> bool:
+    """
+    Проверяет файл на наличие содержимого.
+    """
 
     if not isfile(filename):
         return True
@@ -187,6 +242,17 @@ def suffix(filename: str) -> str:
 
 def write_dict_to_json(
         filename, data, sep = " -> ", eol = "", ignore_none = True):
+    """
+    Записывает содержимое словаря в файл.
+
+    Аргументы:
+    filename    - название файла
+    data        - словарь с полями
+    sep         - разделитель ключа и значения при записи содержимого
+    eol         - конец строки
+    ignore_none - если True, убирает значения с None
+    """
+
     if isfile(filename):
         mode = "w"
     else:
@@ -210,6 +276,13 @@ def write_dict_to_json(
 
 
 def read_json(filename) -> dict:
+    """
+    Записывает данные из json-файла в словарь.
+
+    Аргументы:
+    filename    - название файла
+    """
+
     with open(filename, "r") as file:
         read_data = json_load(file)
     return read_data
@@ -219,6 +292,10 @@ def read_json(filename) -> dict:
 
 
 def prepare_args(message: object, key: object, res_type = int) -> tuple[int, int, object]:
+    """
+    Приводит аргументы к нужным типам.
+    Специально для шифрования.
+    """
 
     if type(message) == str:
         message = str_to_int(message)
