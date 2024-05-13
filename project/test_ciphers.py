@@ -6,10 +6,10 @@ import unittest
 
 from utilities import DECRYPT
 
-from cipher_modes.ofb import ofb
-from cipher_modes.mgm import mgm_encrypt, mgm_decrypt
+from ofb import ofb
+from mgm import mgm_encrypt, mgm_decrypt
 
-from ciphers.camellia import camellia
+from camellia import camellia
 
 from random import randint
 

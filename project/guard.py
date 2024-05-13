@@ -10,17 +10,18 @@ def new_gettext(phrase):
 gettext.gettext = new_gettext
 
 import argparse
+import sys
+
 
 from utilities import *
 from guard_utils import *
 
-from cipher_modes.ofb import ofb
-from cipher_modes.mgm import mgm_encrypt, mgm_decrypt
-from ciphers.camellia import camellia
+from ofb import ofb
+from mgm import mgm_encrypt, mgm_decrypt
+from camellia import camellia
 
 from random import randint
 from os import path
-import sys
 
 
 class MyParser(argparse.ArgumentParser):
